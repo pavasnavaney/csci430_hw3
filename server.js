@@ -47,9 +47,10 @@ app.all('/uploads/*' , isLoggedIn , function(req , res , next) {
 		res.status(403).send({
        message: 'Access Forbidden'
     });
+	} else{
+			next();
 	}
-	next();
-});
+	});
 
 function isLoggedIn(req, res, next) {
 	if (req.isAuthenticated())

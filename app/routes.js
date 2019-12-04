@@ -34,7 +34,7 @@ var upload = multer({
 	storage: storage,
 	fileFilter: function (req, file, callback) {
 		var ext = path.extname(file.originalname);
-		if(ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg' && ext !== '.svg') {
+		if(ext.toLowerCase() !== '.png' && ext.toLowerCase() !== '.jpg' && ext.toLowerCase() !== '.gif' && ext.toLowerCase() !== '.jpeg' && ext.toLowerCase() !== '.svg') {
 				req.fileValidationError = "Forbidden extension";
 				return callback(null, false, req.fileValidationError);
 		}
@@ -57,20 +57,21 @@ module.exports = function(app, passport) {
 	if(req.fileValidationError) {
 		console.log('File Validation Failed!');
 		res.status(500).send({
-			 message: 'Anything except image is not supported!'
+			 message: 'Please make sure you are Uploading an Image!'
 		});
-		next();
 	}
-  if (!file) {
+  else if (!file) {
     const error = new Error('Please upload a file')
     error.httpStatusCode = 400
+		console.log('Even Im called!');
 		res.status(500).send({
 			 message: 'Please upload a file / It Cannot Be Blank'
 		});
+  } else {
+		console.log(file);
+	  res.redirect('/profile');
 		next();
-  }
-	console.log(file);
-  res.redirect('/profile');
+	}
 })
 
 	app.post('/login', passport.authenticate('local-login', {
