@@ -3,7 +3,7 @@ module.exports = {
     'connection': {
         'host': 'localhost',
         'user': 'webuser',
-        'password': '4LwGETurP5VtNw=='
+        'password': 'XZ9E2dJQWyVKKw=='
     },
 	'database': 'csci430',
     	'users_table': 'users'
