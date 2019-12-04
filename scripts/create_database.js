@@ -4,7 +4,7 @@ var dbconfig = require('../config/database');
 var connection = mysql.createConnection(dbconfig.connection);
 
 connection.query('CREATE DATABASE ' + dbconfig.database);
-connection.query('USE csci430');
+connection.query('USE ' + dbconfig.database);
 
 connection.query('\
 CREATE TABLE `users` ( \

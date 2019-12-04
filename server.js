@@ -23,7 +23,7 @@ app.use(bodyParser.json());
 app.set('view engine', 'ejs'); // set up ejs for templating
 
 app.use(session({
-	secret: 'random',
+	secret: 'OflW3WchR9FdlA==',
 	resave: true,
 	saveUninitialized: true
  } )); // session secret
