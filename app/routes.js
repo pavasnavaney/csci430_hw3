@@ -34,7 +34,7 @@ var upload = multer({
 	storage: storage,
 	fileFilter: function (req, file, callback) {
 		var ext = path.extname(file.originalname);
-		if(ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
+		if(ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg' && ext !== '.svg') {
 				return callback(new Error('Only images are allowed'))
 		}
         callback(null, true)
@@ -86,6 +86,8 @@ module.exports = function(app, passport) {
 		failureRedirect : '/signup',
 		failureFlash : true
 	}));
+
+
 
 	app.get('/profile', isLoggedIn, function(req, res , next) {
 		function getURLS() {

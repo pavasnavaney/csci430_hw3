@@ -5,6 +5,9 @@ var session  = require('express-session');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var morgan = require('morgan');
+var crypto = require('crypto');
+var path = require('path');
+var url = require('url');
 var app      = express();
 var port     = process.env.PORT || 8080;
 
@@ -35,8 +38,26 @@ app.use(function(req, res, next) {
   res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
   next();
 });
-app.use(express.static('public'))
+app.all('/uploads/*' , isLoggedIn , function(req , res , next) {
+	var path = url.parse(req.url).pathname;
+	path = path.split("/");
+	var hash = crypto.createHash('sha256').update(JSON.stringify(req.user)).digest('base64');
+	hash = hash.replace('/','');
+	if(path[2] != hash) {
+		res.status(403).send({
+       message: 'Access Forbidden'
+    });
+	}
+	next();
+});
 
+function isLoggedIn(req, res, next) {
+	if (req.isAuthenticated())
+		return next();
+	res.redirect('/');
+}
+
+app.use('/',express.static(path.join(__dirname, 'public')));
 require('./app/routes.js')(app, passport);
 app.listen(port);
 console.log('Server started on port ' + port);
