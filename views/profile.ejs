@@ -32,9 +32,12 @@
 						<strong>username</strong>: <%= user.username %><br>
 						<strong>password</strong>: <%= user.password %>
 					</p>
-
 			</div>
-		</div>
+			<ul>
+    <% for(var i=0; i<allphotos.length; i++) { %>
+        <img src="<%= allphotos[i] %>" alt="">
+    <% } %>
+</ul>
 
 	</div>
 

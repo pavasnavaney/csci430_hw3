@@ -4,11 +4,13 @@ var multer = require('multer');
 var crypto = require('crypto');
 var fs = require('fs');
 var mime = require('mime');
+var Promise = require('promise');
+
 var storage = multer.diskStorage({
 		destination: function (req, file, cb) {
 			var hash = crypto.createHash('sha256').update(JSON.stringify(req.user)).digest('base64');
 			hash = hash.replace('/','');
-			var newDestination = 'uploads/' + hash;
+			var newDestination = 'public/uploads/' + hash;
 			var stat = null;
 			try {
             stat = fs.statSync(newDestination);
@@ -74,11 +76,44 @@ module.exports = function(app, passport) {
 		failureFlash : true
 	}));
 
-	app.get('/profile', isLoggedIn, function(req, res) {
-		res.render('profile.ejs', {
-			user : req.user
+	app.get('/profile', isLoggedIn, function(req, res , next) {
+		function getURLS() {
+				return new Promise(function(resolve , reject) {
+					var hash = crypto.createHash('sha256').update(JSON.stringify(req.user)).digest('base64');
+					hash = hash.replace('/','');
+					var file_arr = []
+					var newDestination = 'public/uploads/' + hash;
+					const fs = require('fs');
+					var stat = null;
+					try {
+								stat = fs.statSync(newDestination);
+								fs.readdir(newDestination, (err, files) => {
+									files.forEach(file => {
+										file_arr.push('/uploads' + '/' + hash + '/' + file);
+										console.log(newDestination + '/' + hash + '/' + file);
+										resolve(file_arr);
+								});
+						});
+						} catch (err) {
+								fs.mkdirSync(newDestination);
+								resolve(file_arr);
+						}
+						if (stat && !stat.isDirectory()) {
+								throw new Error('Directory cannot be created because an inode of a different type exists at "' + dest + '"');
+								reject('Error');
+						}
+				});
+		}
+		getURLS().then(function(data) {
+			console.log('Promise data ' + data);
+			res.render('profile.ejs', {
+				user : req.user,
+				allphotos : data
+			});
+			next();
 		});
 	});
+
 	app.get('/logout', function(req, res) {
 		req.logout();
 		res.redirect('/');
