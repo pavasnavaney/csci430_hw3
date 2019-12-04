@@ -23,6 +23,7 @@
     "passport": "^0.2.2",
     "passport-local": "^1.0.0",
     "password-validator": "^5.0.3",
+    "path": "^0.12.7",
     "promise": "^8.0.3"
   }
 }

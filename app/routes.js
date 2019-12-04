@@ -4,6 +4,7 @@ var multer = require('multer');
 var crypto = require('crypto');
 var fs = require('fs');
 var mime = require('mime');
+var path = require('path');
 var Promise = require('promise');
 
 var storage = multer.diskStorage({
@@ -29,7 +30,17 @@ var storage = multer.diskStorage({
   }
 });
 
-var upload = multer({ storage: storage })
+var upload = multer({
+	storage: storage,
+	fileFilter: function (req, file, callback) {
+		var ext = path.extname(file.originalname);
+		if(ext !== '.png' && ext !== '.jpg' && ext !== '.gif' && ext !== '.jpeg') {
+				return callback(new Error('Only images are allowed'))
+		}
+        callback(null, true)
+    }
+ })
+
 module.exports = function(app, passport) {
 
 	app.get('/', function(req, res) {
