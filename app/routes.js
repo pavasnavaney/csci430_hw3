@@ -54,19 +54,12 @@ module.exports = function(app, passport) {
 
 	app.post('/upload', isLoggedIn , upload.single('pic'), (req, res, next) => {
   const file = req.file
-	if(req.fileValidationError) {
-		console.log('File Validation Failed!');
-		res.status(500).send({
-			 message: 'Please make sure you are Uploading an Image!'
-		});
-	}
-  else if (!file) {
+  if (!file) {
     const error = new Error('Please upload a file')
     error.httpStatusCode = 400
 		console.log('Even Im called!');
-		res.status(500).send({
-			 message: 'Please upload a file / It Cannot Be Blank'
-		});
+		res.redirect('/profile');
+		next();
   } else {
 		console.log(file);
 	  res.redirect('/profile');
@@ -102,6 +95,7 @@ module.exports = function(app, passport) {
 
 
 	app.get('/profile', isLoggedIn, function(req, res , next) {
+		console.log('Getting URLs');
 		function getURLS() {
 				return new Promise(function(resolve , reject) {
 					var hash = crypto.createHash('sha256').update(JSON.stringify(req.user)).digest('base64');
@@ -132,6 +126,7 @@ module.exports = function(app, passport) {
 				});
 		}
 		getURLS().then(function(data) {
+			console.log('Got urls');
 			if(data == null) {
 				data = [];
 			}
