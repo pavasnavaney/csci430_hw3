@@ -34,10 +34,7 @@ app.use(passport.initialize());
 app.use(passport.session()); // persistent login sessions
 app.use(flash()); // use connect-flash for flash messages stored in session
 
-app.use(function(req, res, next) {
-  res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-  next();
-});
+
 app.all('/uploads/*' , isLoggedIn , function(req , res , next) {
 	var path = url.parse(req.url).pathname;
 	path = path.split("/");
