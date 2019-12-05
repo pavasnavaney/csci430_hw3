@@ -16,7 +16,7 @@ var storage = multer.diskStorage({
 			try {
             stat = fs.statSync(newDestination);
         } catch (err) {
-            fs.mkdirSync(newDestination);
+            throw new Error('Directory not found!');
         }
         if (stat && !stat.isDirectory()) {
             throw new Error('Directory cannot be created because an inode of a different type exists at "' + dest + '"');
@@ -113,6 +113,8 @@ module.exports = function(app, passport) {
 					try {
 								stat = fs.statSync(newDestination);
 								fs.readdir(newDestination, (err, files) => {
+									if(!files.length)
+										resolve(null);
 									files.forEach(file => {
 										file_arr.push('/uploads' + '/' + hash + '/' + file);
 										console.log(newDestination + '/' + hash + '/' + file);
@@ -130,6 +132,9 @@ module.exports = function(app, passport) {
 				});
 		}
 		getURLS().then(function(data) {
+			if(data == null) {
+				data = [];
+			}
 			console.log('Promise data ' + data);
 			res.render('profile.ejs', {
 				user : req.user,
@@ -140,7 +145,6 @@ module.exports = function(app, passport) {
 	});
 
 	app.get('/logout', function(req, res) {
-		res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
 		req.logout();
 		res.redirect('/');
 	});

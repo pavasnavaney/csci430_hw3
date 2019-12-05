@@ -2,8 +2,8 @@
 module.exports = {
     'connection': {
         'host': 'localhost',
-        'user': 'webuser',
-        'password': 'XZ9E2dJQWyVKKw=='
+        'user': 'root',
+        'password': ''
     },
 	'database': 'csci430',
     	'users_table': 'users'
